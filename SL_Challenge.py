@@ -14,7 +14,7 @@ import matplotlib
 from matplotlib.backends.backend_agg import RendererAgg
 import matplotlib.image as mping
 
-scl_flt = pd.read_csv("./data_streamlit.csv")
+scl_flt = pd.read_csv("data_streamlit.csv")
 st.set_page_config(layout="wide")
 #['OPERA','TIPOVUELO','temporada_alta','periodo_dia','MES']
 
