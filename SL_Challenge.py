@@ -46,7 +46,7 @@ row1_spacer1, row1_1, row1_spacer2 = st.columns((.1, 3.2, .1))
 with row1_1:
     st.markdown("This is the webapp made to test the models generated on the Analysis of the Data.")
     st.markdown("You need to select the value of the variables and the web app will provide to you the expected time of delay")
-     
+    st.markdown("I suggest to you to test with different values of month especially for the classifier.")
 row2_spacer1, row2_1, row2_spacer2, row2_2, row2_spacer3, row2_3, row2_spacer4, row2_4, row2_spacer5, row2_5 = st.columns(
     (.1, 1, .1, 1, .1, 1, .1, 1, .1, 1))
 with row2_1:
