@@ -17,6 +17,7 @@ import scipy.stats as stats
 
 reg = pickle.load(open("regression.sav", 'rb'))
 clf = pickle.load(open("clf.sav", 'rb'))
+knn = pickle.load(open("clfknn.sav", 'rb'))
 scl_flt = pd.read_csv("data_streamlit.csv")
 st.set_page_config(layout="wide")
 #['OPERA','TIPOVUELO','temporada_alta','periodo_dia','MES']
@@ -45,7 +46,7 @@ row1_spacer1, row1_1, row1_spacer2 = st.columns((.1, 3.2, .1))
 with row1_1:
     st.markdown("This is the webapp made to test the models generated on the Analysis of the Data.")
     st.markdown("You need to select the value of the variables and the web app will provide to you the expected time of delay")
-    st.markdown(reg)    
+     
 row2_spacer1, row2_1, row2_spacer2, row2_2, row2_spacer3, row2_3, row2_spacer4, row2_4, row2_spacer5, row2_5 = st.columns(
     (.1, 1, .1, 1, .1, 1, .1, 1, .1, 1))
 with row2_1:
@@ -105,15 +106,34 @@ df1 = pd.get_dummies(data=df1, drop_first=True)
 with row3_1, _lock:
     st.header('Result of the regression:')
     pre = reg.predict(df.tail(1))[0]
-    
+    st.markdown(reg)   
     st.subheader("Time expected [Min] {:.2f}".format(pre))
     st.markdown("Probability that this flight don't get delayed more time base on the original data")
     st.subheader("Probability of {:.2f}%".format(stats.percentileofscore(scl_flt["dif_min"], pre)))
-    
-#with row3_2, _lock:
+thisdict = {
+  1 : "Less than 15 minutes of Delay",
+  2: "From 15 to 45 minutes of Delay",
+  3: "more than 45 minutes of Delay"
+}    
+with row3_2, _lock:
+    st.subheader('Result of the classification:')
+    st.markdown(clf)
+    predicted = clf.predict(df.tail(1))[0]
+    prob = clf.predict_proba(df.tail(1))
+    st.subheader(thisdict[predicted])
+    st.subheader("Probability of {:.2f}%".format(100*prob[0][predicted-1]))
     #st.subheader('Result of the classification:')
-    #predicted = clf.predict(df.tail(1))[0]
-    #prob = clf.predict_proba(df.tail(1))
+    #st.subheader(knn)
+    #predicted = knn.predict(df.tail(1))[0]
+    #prob = knn.predict_proba(df.tail(1))
     #st.subheader(predicted)
-    #st.subheader(prob)
+    #st.subheader("Probability of {:.2f}%".format(100*prob[0][predicted-1]))
+    #st.markdown(clf.classes_)
+row4_spacer1, row4_1, row4_spacer2 = st.columns((.1, 3.2, .1))
 
+with row4_1:
+    st.title("Conclusion")
+    st.markdown("First of all it is important to check that all the data is clean in the dataset specially for the variables that we are going to work with.")
+    st.markdown("On the other hand, choosing the model to use in this kind of application is not easy due to all the variables that have influence on the variable of the delayed time. It would be nice to have more numeric variables that can have a good correlation with our variables, but in this case we had to transform the categorical values into dummies columns in order to train the models. ")
+    st.markdown("Different values such as weather, the id of the plane, the conditions on the other airports are always a good idea in this case of models.")
+    st.markdown("As I commented in the notebook, we need to find a way to balance the data especially when we are performing classification models, because the model can increase the accuracy given different scenarios.")
